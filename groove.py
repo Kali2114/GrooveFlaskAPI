@@ -2,7 +2,5 @@
 
 
 from app import app
-
-
-if __name__ == "__main__":
-    app.run()
+print("FLASK_ENV:", app.config.get("ENV"))
+print("DEBUG:", app.config.get("DEBUG"))
