@@ -1,4 +1,5 @@
 """Main file app."""
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -15,3 +16,5 @@ migrate = Migrate(app, db)
 
 from app import artists
 from app import models
+from app import db_manage_commands
+from app import errors

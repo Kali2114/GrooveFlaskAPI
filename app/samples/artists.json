@@ -1,0 +1,37 @@
+[
+  {
+    "name": "VNM",
+    "label": "DNB",
+    "birth_date": "25-01-1984"
+  },
+  {
+    "name": "Pyskaty",
+    "label": "Aptaun",
+    "birth_date": "18-01-1974"
+  },
+  {
+    "name": "Eripe",
+    "label": "Patokalipsa",
+    "birth_date": "22-04-1989"
+  },
+  {
+    "name": "Oxon",
+    "label": "Hipocentrum",
+    "birth_date": "25-06-1988"
+  },
+  {
+    "name": "PeeRZet",
+    "label": "Hipocentrum",
+    "birth_date": "18-07-1985"
+  },
+  {
+    "name": "Ero",
+    "label": "Def Jam",
+    "birth_date": "18-04-1981"
+  },
+  {
+    "name": "Bonson",
+    "label": "Def Jam",
+    "birth_date": "29-03-1990"
+  }
+]
