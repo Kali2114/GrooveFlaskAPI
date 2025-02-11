@@ -1,7 +1,6 @@
 """
 Models in databse.
 """
-
 from marshmallow import Schema, fields, validate, validates, ValidationError
 
 from datetime import datetime
@@ -20,6 +19,30 @@ class Artist(db.Model):
 
     def __repr__(self):
         return f"<{self.__class__.__name__}>: {self.name}"
+
+    @staticmethod
+    def get_schema_args(fields: str) -> dict:
+        """Returns schema arguments with optional field filtering."""
+        schema_args = {"many": True}
+        if fields:
+            schema_args["only"] = [
+                field for field in fields.split(",") if field in Artist.__table__.columns
+            ]
+        return schema_args
+
+    @staticmethod
+    def apply_orders(query, sort_keys):
+        """Applies sorting to the query based on provided sort keys."""
+        if sort_keys:
+            for key in sort_keys.split(','):
+                flag = False
+                if key.startswith("-"):
+                    key = key[1:]
+                    flag = True
+                column_attr = getattr(Artist, key, None)
+                if column_attr is not None:
+                    query = query.order_by(column_attr.desc()) if flag else query.order_by(column_attr)
+        return query
 
 
 class ArtistSchema(Schema):

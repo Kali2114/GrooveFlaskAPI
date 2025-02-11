@@ -16,8 +16,11 @@ from app.utils import validate_content_type
 
 @app.route("/api/artists", methods=["GET"])
 def get_artists():
-    artists = Artist.query.all()
-    artist_schema = ArtistSchema(many=True)
+    query = Artist.query
+    schema_args = Artist.get_schema_args(request.args.get("fields"))
+    query = Artist.apply_orders(query, request.args.get("sort"))
+    artists = query.all()
+    artist_schema = ArtistSchema(**schema_args)
     return jsonify(
         {
             "success": True,
