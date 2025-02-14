@@ -19,6 +19,7 @@ def get_artists():
     query = Artist.query
     schema_args = Artist.get_schema_args(request.args.get("fields"))
     query = Artist.apply_orders(query, request.args.get("sort"))
+    query = Artist.apply_filter(query, request.args)
     artists = query.all()
     artist_schema = ArtistSchema(**schema_args)
     return jsonify(

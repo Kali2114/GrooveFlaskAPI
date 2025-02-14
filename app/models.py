@@ -1,11 +1,16 @@
 """
 Models in databse.
 """
+from sqlalchemy.sql.expression import BinaryExpression
 from marshmallow import Schema, fields, validate, validates, ValidationError
 
+import re
 from datetime import datetime
 
 from app import db
+
+
+COMPARISON_OPERATORS_RE = re.compile(r'(.*)\[(gte|gt|lte|lt)]')
 
 
 class Artist(db.Model):
@@ -42,6 +47,37 @@ class Artist(db.Model):
                 column_attr = getattr(Artist, key, None)
                 if column_attr is not None:
                     query = query.order_by(column_attr.desc()) if flag else query.order_by(column_attr)
+        return query
+
+    @staticmethod
+    def get_filter_argument(column_name, value, operator):
+        operator_mapping = {
+            "==": column_name == value,
+            "gte": column_name >= value,
+            "gt": column_name > value,
+            "lte": column_name <= value,
+            "lt": column_name < value,
+        }
+        return operator_mapping[operator]
+
+    @staticmethod
+    def apply_filter(query, params):
+        """Apply filter to records."""
+        for param, value in params.items():
+            if param not in {"fields", "sort"}:
+                operator = "=="
+                match = COMPARISON_OPERATORS_RE.match(param)
+                if match is not None:
+                    param_operator = match.groups()
+                column_attr = getattr(Artist, param, None)
+                if column_attr is not None:
+                    if param == "birth_date":
+                        try:
+                            value = datetime.strptime(value, "%d-%m-%Y").date()
+                        except ValueError:
+                            continue
+                    filter_argument = Artist.get_filter_argument(column_attr, value, operator)
+                    query = query.filter(filter_argument)
         return query
 
 
