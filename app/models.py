@@ -1,13 +1,14 @@
 """
 Models in databse.
 """
-from sqlalchemy.sql.expression import BinaryExpression
 from marshmallow import Schema, fields, validate, validates, ValidationError
+from flask import request, url_for
 
 import re
 from datetime import datetime
 
 from app import db
+from app import Config
 
 
 COMPARISON_OPERATORS_RE = re.compile(r'(.*)\[(gte|gt|lte|lt)]')
@@ -61,14 +62,14 @@ class Artist(db.Model):
         return operator_mapping[operator]
 
     @staticmethod
-    def apply_filter(query, params):
+    def apply_filter(query):
         """Apply filter to records."""
-        for param, value in params.items():
-            if param not in {"fields", "sort"}:
+        for param, value in request.args.items():
+            if param not in {"fields", "sort", "page", "limit"}:
                 operator = "=="
                 match = COMPARISON_OPERATORS_RE.match(param)
                 if match is not None:
-                    param_operator = match.groups()
+                    param, operator = match.groups()
                 column_attr = getattr(Artist, param, None)
                 if column_attr is not None:
                     if param == "birth_date":
@@ -79,6 +80,25 @@ class Artist(db.Model):
                     filter_argument = Artist.get_filter_argument(column_attr, value, operator)
                     query = query.filter(filter_argument)
         return query
+
+    @staticmethod
+    def get_pagination(query):
+        page = request.args.get("page", 1, type=int)
+        limit = request.args.get("limit", Config.PER_PAGE, type=int)
+        params = {key: value for key, value in request.args.items() if key != "page"}
+        paginate_obj = query.paginate(page=page, per_page=limit, error_out=False)
+        pagination = {
+            "total_pages": paginate_obj.pages,
+            "total_records": paginate_obj.total,
+            "current_page": url_for("artists.get_artists", page=page, **params)
+        }
+        if paginate_obj.has_next:
+            pagination["next_page"] = url_for("get_artists", page=page+1, **params)
+
+        if paginate_obj.has_prev:
+            pagination["previous_page"] = url_for("get_artists", page=page-1, **params)
+
+        return paginate_obj.items, pagination
 
 
 class ArtistSchema(Schema):

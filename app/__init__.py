@@ -16,5 +16,5 @@ migrate = Migrate(app, db)
 
 from app import artists
 from app import models
-from app import db_manage_commands
+from app.commands import db_manage_commands
 from app import errors

@@ -8,11 +8,12 @@ import json
 from pathlib import Path
 from datetime import datetime
 
-from app import app, db
+from app import db
 from app.models import Artist
+from app.commands import db_manage_bp
 
 
-@app.cli.group()
+@db_manage_bp.cli.group()
 def db_manage():
     """Database management commands."""
     pass
@@ -22,7 +23,7 @@ def db_manage():
 def add_data():
     """Add sample data to database."""
     try:
-        artists_path = Path(__file__).parent / "samples" / "artists.json"
+        artists_path = Path(__file__).parent.parent / "samples" / "artists.json"
         with open(artists_path) as file:
             data_json = json.load(file)
         for item in data_json:

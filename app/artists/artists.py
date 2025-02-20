@@ -5,33 +5,36 @@ Module for manage artists.
 from webargs.flaskparser import use_args
 from flask import jsonify, request
 
-from app import app, db
+from app import db
 from app.models import (
     Artist,
     ArtistSchema,
     artist_schema,
 )
 from app.utils import validate_content_type
+from app.artists import artists_bp
 
 
-@app.route("/api/artists", methods=["GET"])
+@artists_bp.route("/api/artists", methods=["GET"])
 def get_artists():
     query = Artist.query
     schema_args = Artist.get_schema_args(request.args.get("fields"))
     query = Artist.apply_orders(query, request.args.get("sort"))
-    query = Artist.apply_filter(query, request.args)
-    artists = query.all()
-    artist_schema = ArtistSchema(**schema_args)
+    query = Artist.apply_filter(query)
+    items, pagination = Artist.get_pagination(query)
+    artists = ArtistSchema(**schema_args).dump(items)
+
     return jsonify(
         {
             "success": True,
-            "data": artist_schema.dump(artists),
+            "data": artists,
             "number_of_records": len(artists),
+            "pagination": pagination,
         }
     )
 
 
-@app.route("/api/artists/<int:artist_id>", methods=["GET"])
+@artists_bp.route("/api/artists/<int:artist_id>", methods=["GET"])
 def get_artist_detail(artist_id: int):
     artist = Artist.query.get_or_404(
         artist_id, description=f"Artist with id {artist_id} not found."
@@ -39,7 +42,7 @@ def get_artist_detail(artist_id: int):
     return jsonify({"success": True, "data": artist_schema.dump(artist)})
 
 
-@app.route("/api/artists", methods=["POST"])
+@artists_bp.route("/api/artists", methods=["POST"])
 @validate_content_type
 @use_args(artist_schema, error_status_code=400)
 def create_artist(args: dict):
@@ -58,7 +61,7 @@ def create_artist(args: dict):
     )
 
 
-@app.route("/api/artists/<int:artist_id>", methods=["PUT"])
+@artists_bp.route("/api/artists/<int:artist_id>", methods=["PUT"])
 @validate_content_type
 @use_args(artist_schema, error_status_code=400)
 def update_artist(args: dict, artist_id: int):
@@ -76,7 +79,7 @@ def update_artist(args: dict, artist_id: int):
     )
 
 
-@app.route("/api/artists/<int:artist_id>", methods=["DELETE"])
+@artists_bp.route("/api/artists/<int:artist_id>", methods=["DELETE"])
 def delete_artist(artist_id: int):
     artist = Artist.query.get_or_404(
         artist_id, description=f"Artist with id {artist_id} not found."
