@@ -22,6 +22,11 @@ class Artist(db.Model):
     name = db.Column(db.String(50), nullable=False)
     label = db.Column(db.String(50))
     birth_date = db.Column(db.Date)
+    album = db.relationship(
+        "Book",
+        back_populates="artist",
+        cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<{self.__class__.__name__}>: {self.name}"
@@ -99,6 +104,22 @@ class Artist(db.Model):
             pagination["previous_page"] = url_for("artists.get_artists", page=page-1, **params)
 
         return paginate_obj.items, pagination
+
+
+class Album(db.Model):
+    """Model for music albums."""
+
+    __tablename__ = "Albums"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), nullable=False)
+    number_of_songs = db.Column(db.Integer)
+    description = db.Column(db.Text)
+    release_year = db.Column(db.Date)
+    artist_id = db.Column(db.Integer, db.ForeignKey("Artists.id"), nullable=False)
+    artist = db.relationship("Artist", back_populates="albums")
+
+    def __repr__(self):
+        return f"{self.title} - {self.artist.name} ({self.release_year})"
 
 
 class ArtistSchema(Schema):
