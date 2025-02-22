@@ -15,7 +15,7 @@ from app.utils import validate_content_type
 from app.artists import artists_bp
 
 
-@artists_bp.route("/api/artists", methods=["GET"])
+@artists_bp.route("/artists", methods=["GET"])
 def get_artists():
     query = Artist.query
     schema_args = Artist.get_schema_args(request.args.get("fields"))
@@ -34,7 +34,7 @@ def get_artists():
     )
 
 
-@artists_bp.route("/api/artists/<int:artist_id>", methods=["GET"])
+@artists_bp.route("/artists/<int:artist_id>", methods=["GET"])
 def get_artist_detail(artist_id: int):
     artist = Artist.query.get_or_404(
         artist_id, description=f"Artist with id {artist_id} not found."
@@ -42,7 +42,7 @@ def get_artist_detail(artist_id: int):
     return jsonify({"success": True, "data": artist_schema.dump(artist)})
 
 
-@artists_bp.route("/api/artists", methods=["POST"])
+@artists_bp.route("/artists", methods=["POST"])
 @validate_content_type
 @use_args(artist_schema, error_status_code=400)
 def create_artist(args: dict):
@@ -61,7 +61,7 @@ def create_artist(args: dict):
     )
 
 
-@artists_bp.route("/api/artists/<int:artist_id>", methods=["PUT"])
+@artists_bp.route("/artists/<int:artist_id>", methods=["PUT"])
 @validate_content_type
 @use_args(artist_schema, error_status_code=400)
 def update_artist(args: dict, artist_id: int):
@@ -79,7 +79,7 @@ def update_artist(args: dict, artist_id: int):
     )
 
 
-@artists_bp.route("/api/artists/<int:artist_id>", methods=["DELETE"])
+@artists_bp.route("/artists/<int:artist_id>", methods=["DELETE"])
 def delete_artist(artist_id: int):
     artist = Artist.query.get_or_404(
         artist_id, description=f"Artist with id {artist_id} not found."

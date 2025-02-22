@@ -93,10 +93,10 @@ class Artist(db.Model):
             "current_page": url_for("artists.get_artists", page=page, **params)
         }
         if paginate_obj.has_next:
-            pagination["next_page"] = url_for("get_artists", page=page+1, **params)
+            pagination["next_page"] = url_for("artists.get_artists", page=page+1, **params)
 
         if paginate_obj.has_prev:
-            pagination["previous_page"] = url_for("get_artists", page=page-1, **params)
+            pagination["previous_page"] = url_for("artists.get_artists", page=page-1, **params)
 
         return paginate_obj.items, pagination
 
