@@ -3,7 +3,7 @@ Module for manage artists.
 """
 
 from webargs.flaskparser import use_args
-from flask import jsonify, request
+from flask import jsonify
 
 from app import db
 from app.models import (
@@ -11,17 +11,23 @@ from app.models import (
     ArtistSchema,
     artist_schema,
 )
-from app.utils import validate_content_type
+from app.utils import (
+    validate_content_type,
+    get_schema_args,
+    apply_orders,
+    apply_filter,
+    get_pagination,
+)
 from app.artists import artists_bp
 
 
 @artists_bp.route("/artists", methods=["GET"])
 def get_artists():
     query = Artist.query
-    schema_args = Artist.get_schema_args(request.args.get("fields"))
-    query = Artist.apply_orders(query, request.args.get("sort"))
-    query = Artist.apply_filter(query)
-    items, pagination = Artist.get_pagination(query)
+    schema_args = get_schema_args(Artist)
+    query = apply_orders(Artist, query)
+    query = apply_filter(Artist, query)
+    items, pagination = get_pagination(query, "artists.get_artists")
     artists = ArtistSchema(**schema_args).dump(items)
 
     return jsonify(
@@ -73,10 +79,7 @@ def update_artist(args: dict, artist_id: int):
     artist.birth_date = args["birth_date"]
     db.session.commit()
 
-    return jsonify(
-        {"success": True,
-         "data": artist_schema.dump(artist)}
-    )
+    return jsonify({"success": True, "data": artist_schema.dump(artist)})
 
 
 @artists_bp.route("/artists/<int:artist_id>", methods=["DELETE"])

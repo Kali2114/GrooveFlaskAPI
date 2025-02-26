@@ -7,13 +7,11 @@ from flask import Response, jsonify
 from app import db
 from app.errors import errors_bp
 
+
 class ErrorResponse:
 
     def __init__(self, message: str, http_status: int):
-        self.payload = {
-            "success": False,
-            "message": message
-        }
+        self.payload = {"success": False, "message": message}
         self.http_status = http_status
 
     def to_response(self) -> Response:

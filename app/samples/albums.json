@@ -1,0 +1,128 @@
+[
+  {
+    "title": "EDKT",
+    "number_of_songs": 14,
+    "description": "Second VNM's legal album, that it give him fame.",
+    "release_year": 2012,
+    "artist_id": 1
+  },
+  {
+    "title": "Propejn",
+    "number_of_songs": 13,
+    "description": "Third VNM's legal album.",
+    "release_year": 2012,
+    "artist_id": 1
+  },
+  {
+    "title": "Pasja",
+    "number_of_songs": 15,
+    "description": "Second Pyskaty's legal album.",
+    "release_year": 2012,
+    "artist_id": 2
+  },
+  {
+    "title": "Opium",
+    "number_of_songs": 16,
+    "description": "Eripe's hard bragga style rap.",
+    "release_year": 2015,
+    "artist_id": 3
+  },
+  {
+    "title": "Odium EP",
+    "number_of_songs": 7,
+    "description": "Eripe's EP album - bragga.",
+    "release_year": 2012,
+    "artist_id": 3
+  },
+  {
+    "title": "Odium EP",
+    "number_of_songs": 14,
+    "description": "Oxon superpowers lp.",
+    "release_year": 2015,
+    "artist_id": 4
+  },
+  {
+    "title": "Zupelniezwykly",
+    "number_of_songs": 14,
+    "description": "Oxon third solo lp.",
+    "release_year": 2018,
+    "artist_id": 4
+  },
+  {
+    "title": "Sowy EP",
+    "number_of_songs": 8,
+    "description": "Oxon lo-fi ep.",
+    "release_year": 2022,
+    "artist_id": 4
+  },
+  {
+    "title": "Hipocentrum",
+    "number_of_songs": 14,
+    "description": "PeeRZet illegal cd.",
+    "release_year": 2008,
+    "artist_id": 5
+  },
+  {
+    "title": "Z Milosci Do Gry",
+    "number_of_songs": 15,
+    "description": "First legal PeeRZet's cd.",
+    "release_year": 2012,
+    "artist_id": 5
+  },
+  {
+    "title": "Doktor Majk",
+    "number_of_songs": 16,
+    "description": "Second legal PeeRZet's cd.",
+    "release_year": 2014,
+    "artist_id": 5
+  },
+  {
+    "title": "Elvis Picasso",
+    "number_of_songs": 19,
+    "description": "First Ero's solo cd from legendary squad JWP.",
+    "release_year": 2019,
+    "artist_id": 6
+  },
+  {
+    "title": "Eroizm",
+    "number_of_songs": 21,
+    "description": "Second Ero's solo cd.",
+    "release_year": 2021,
+    "artist_id": 6
+  },
+  {
+    "title": "Restart",
+    "number_of_songs": 15,
+    "description": "Classical Bonsoul.",
+    "release_year": 2019,
+    "artist_id": 7
+  },
+  {
+    "title": "Refluks",
+    "number_of_songs": 11,
+    "description": "Again, just Bonsoul.",
+    "release_year": 2023,
+    "artist_id": 6
+  },
+  {
+    "title": "Postanawia Umrzec",
+    "number_of_songs": 12,
+    "description": "Bonson, simple.",
+    "release_year": 2018,
+    "artist_id": 6
+  },
+  {
+    "title": "Diabel Stroz",
+    "number_of_songs": 13,
+    "description": "Devil Bonson.",
+    "release_year": 2022,
+    "artist_id": 6
+  },
+  {
+    "title": "Eroizm",
+    "number_of_songs": 11,
+    "description": "Best greetings from Warsaw.",
+    "release_year": 2024,
+    "artist_id": 6
+  }
+]
