@@ -21,9 +21,11 @@ def create_app(config_class=Config):
     from app.commands import db_manage_bp
     from app.errors import errors_bp
     from app.artists import artists_bp
+    from app.albums import albums_bp
 
     app.register_blueprint(db_manage_bp)
     app.register_blueprint(errors_bp)
     app.register_blueprint(artists_bp, url_prefix="/api")
+    app.register_blueprint(albums_bp, url_prefix="/api")
 
     return app

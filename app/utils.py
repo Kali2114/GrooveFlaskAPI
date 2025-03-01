@@ -2,13 +2,15 @@
 Utils for app.
 """
 
-from flask import request, url_for
+from flask import (
+    request,
+    url_for,
+    current_app
+)
 
 from werkzeug.exceptions import UnsupportedMediaType
 from functools import wraps
 import re
-
-from app import Config
 
 
 COMPARISON_OPERATORS_RE = re.compile(r"(.*)\[(gte|gt|lte|lt)]")
@@ -92,7 +94,7 @@ def apply_filter(model, query):
 def get_pagination(query, func_name):
     """Apply pagination to records."""
     page = request.args.get("page", 1, type=int)
-    limit = request.args.get("limit", Config.PER_PAGE, type=int)
+    limit = request.args.get("limit", current_app.config.get("PER_PAGE", 5), type=int)
     params = {key: value for key, value in
               request.args.items() if key != "page"}
     paginate_obj = query.paginate(page=page, per_page=limit, error_out=False)
