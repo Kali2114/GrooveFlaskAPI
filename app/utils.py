@@ -2,11 +2,7 @@
 Utils for app.
 """
 
-from flask import (
-    request,
-    url_for,
-    current_app
-)
+from flask import request, url_for, current_app
 
 from werkzeug.exceptions import UnsupportedMediaType
 from functools import wraps
@@ -33,8 +29,7 @@ def get_schema_args(model):
     fields = request.args.get("fields")
     if fields:
         schema_args["only"] = [
-            field for field in fields.split(",")
-            if field in model.__table__.columns
+            field for field in fields.split(",") if field in model.__table__.columns
         ]
     return schema_args
 
@@ -82,11 +77,7 @@ def apply_filter(model, query):
                 value = model.additional_validate(param, value)
                 if value is None:
                     continue
-                filter_argument = _get_filter_argument(
-                    column_attr,
-                    value,
-                    operator
-                )
+                filter_argument = _get_filter_argument(column_attr, value, operator)
                 query = query.filter(filter_argument)
     return query
 
@@ -95,8 +86,7 @@ def get_pagination(query, func_name):
     """Apply pagination to records."""
     page = request.args.get("page", 1, type=int)
     limit = request.args.get("limit", current_app.config.get("PER_PAGE", 5), type=int)
-    params = {key: value for key, value in
-              request.args.items() if key != "page"}
+    params = {key: value for key, value in request.args.items() if key != "page"}
     paginate_obj = query.paginate(page=page, per_page=limit, error_out=False)
     pagination = {
         "total_pages": paginate_obj.pages,
@@ -107,8 +97,6 @@ def get_pagination(query, func_name):
         pagination["next_page"] = url_for(func_name, page=page + 1, **params)
 
     if paginate_obj.has_prev:
-        pagination["previous_page"] = (
-            url_for(func_name, page=page - 1, **params)
-        )
+        pagination["previous_page"] = url_for(func_name, page=page - 1, **params)
 
     return paginate_obj.items, pagination

@@ -33,6 +33,12 @@ def bad_request_error(error):
     return ErrorResponse(message, 400).to_response()
 
 
+@errors_bp.errorhandler(401)
+def unauthorized_error(error):
+    """401 error."""
+    return ErrorResponse(error.description, 401).to_response()
+
+
 @errors_bp.errorhandler(415)
 def unsupported_media_type_error(error):
     return ErrorResponse(error.descrition, 415).to_response()

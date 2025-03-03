@@ -40,6 +40,7 @@ def get_albums():
         }
     )
 
+
 @albums_bp.route("/albums/<int:album_id>", methods=["GET"])
 def get_album_detail(album_id: int):
     album = Album.query.get_or_404(
@@ -81,9 +82,9 @@ def delete_artist(album_id: int):
 
     return jsonify(
         {
-            "success":True,
+            "success": True,
             "data": f"Album with id {album_id} has been deleted."
-        }
+         }
     )
 
 
@@ -95,13 +96,7 @@ def get_all_artist_albums(artist_id):
     albums = Album.query.filter(Album.artist_id == artist_id).all()
     items = AlbumSchema(many=True, exclude=["artist"]).dump(albums)
 
-    return jsonify(
-        {
-            "success":True,
-            "data": items,
-            "number_of_records": len(items)
-        }
-    )
+    return jsonify({"success": True, "data": items, "number_of_records": len(items)})
 
 
 @albums_bp.route("artist/<int:artist_id>/albums", methods=["POST"])
@@ -115,9 +110,4 @@ def create_album(args: dict, artist_id: int):
     db.session.add(album)
     db.session.commit()
 
-    return jsonify(
-        {
-            "success": True,
-            "data": album_schema.dump(album)
-        }
-    ),201
+    return jsonify({"success": True, "data": album_schema.dump(album)}), 201

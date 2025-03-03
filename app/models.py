@@ -2,16 +2,19 @@
 Models in databse.
 """
 
+import jwt
+from flask import current_app
 from marshmallow import (
     Schema,
     fields,
     validate,
     validates,
     validates_schema,
-    ValidationError
+    ValidationError,
 )
 
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db
 
@@ -50,11 +53,7 @@ class Album(db.Model):
     number_of_songs = db.Column(db.Integer)
     description = db.Column(db.Text)
     release_year = db.Column(db.Integer)
-    artist_id = db.Column(
-        db.Integer,
-        db.ForeignKey("Artists.id"),
-        nullable=False
-    )
+    artist_id = db.Column(db.Integer, db.ForeignKey("Artists.id"), nullable=False)
     artist = db.relationship("Artist", back_populates="albums")
 
     def __repr__(self):
@@ -63,6 +62,35 @@ class Album(db.Model):
     @staticmethod
     def additional_validate(param, value):
         return value
+
+
+class User(db.Model):
+    """Model for users."""
+
+    __tablename__ = "Users"
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(255), nullable=False, unique=True, index=True)
+    email = db.Column(db.String(255), nullable=False, unique=True)
+    password = db.Column(db.String(255), nullable=False)
+    creation_date = db.Column(db.DateTime, default=datetime.now)
+
+    @staticmethod
+    def generate_hashed_password(password):
+        """Generate hashed password for user."""
+        return generate_password_hash(password)
+
+    def generate_jwt(self):
+        """Generate JWT Token for user."""
+        payload = {
+            "user_id": self.id,
+            "exp": datetime.now(timezone.utc)
+            + timedelta(minutes=current_app.config.get("JWT_EXPIRED_MINUTES", 60)),
+        }
+        return jwt.encode(payload, current_app.config.get("SECRET_KEY"))
+
+    def is_password_valid(self, password):
+        """Check that the password to login is valid."""
+        return check_password_hash(self.password, password)
 
 
 class ArtistSchema(Schema):
@@ -97,7 +125,7 @@ class AlbumSchema(Schema):
     @validates_schema(skip_on_field_errors=False)
     def validate_album(self, data, **kwargs):
         """Validation that number of songs and release
-         year must be greater than zero."""
+        year must be greater than zero."""
         if "number_of_songs" in data and data["number_of_songs"] <= 0:
             raise ValidationError("Number of songs must be greater than zero.")
 
@@ -105,16 +133,18 @@ class AlbumSchema(Schema):
             raise ValidationError("Release year must be greater than zero.")
 
 
-class User(db.Model):
-    """Model for users."""
+class UserSchema(Schema):
+    """Class for serialization user."""
 
-    __tablename__ = "Users"
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(255), nullable=False, unique=True, index=True)
-    email = db.Column(db.String(255), nullable=False, unique=True)
-    password = db.Column(db.String(255), nullable=False)
-    creation_date = db.Column(db.DateTime, default=datetime.now)
+    id = fields.Integer(dump_only=True)
+    username = fields.String(required=True, validate=validate.Length(max=255))
+    email = fields.Email(required=True)
+    password = fields.String(
+        required=True, load_only=True, validate=validate.Length(min=6, max=255)
+    )
+    creation_date = fields.DateTime(dump_only=True)
 
 
 artist_schema = ArtistSchema()
 album_schema = AlbumSchema()
+user_schema = UserSchema()
