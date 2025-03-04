@@ -17,6 +17,7 @@ from app.utils import (
     apply_orders,
     apply_filter,
     get_pagination,
+    token_required,
 )
 from app.artists import artists_bp
 
@@ -49,9 +50,10 @@ def get_artist_detail(artist_id: int):
 
 
 @artists_bp.route("/artists", methods=["POST"])
+@token_required
 @validate_content_type
 @use_args(artist_schema, error_status_code=400)
-def create_artist(args: dict):
+def create_artist(user_id: int, args: dict):
     artist = Artist(**args)
     db.session.add(artist)
     db.session.commit()
@@ -68,9 +70,10 @@ def create_artist(args: dict):
 
 
 @artists_bp.route("/artists/<int:artist_id>", methods=["PUT"])
+@token_required
 @validate_content_type
 @use_args(artist_schema, error_status_code=400)
-def update_artist(args: dict, artist_id: int):
+def update_artist(user_id: int, args: dict, artist_id: int):
     artist = Artist.query.get_or_404(
         artist_id, description=f"Artist with id {artist_id} not found."
     )
@@ -83,7 +86,8 @@ def update_artist(args: dict, artist_id: int):
 
 
 @artists_bp.route("/artists/<int:artist_id>", methods=["DELETE"])
-def delete_artist(artist_id: int):
+@token_required
+def delete_artist(user_id: int, artist_id: int):
     artist = Artist.query.get_or_404(
         artist_id, description=f"Artist with id {artist_id} not found."
     )

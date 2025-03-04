@@ -2,8 +2,14 @@
 Utils for app.
 """
 
-from flask import request, url_for, current_app
+from flask import (
+    request,
+    url_for,
+    current_app,
+    abort,
+)
 
+import jwt
 from werkzeug.exceptions import UnsupportedMediaType
 from functools import wraps
 import re
@@ -20,6 +26,27 @@ def validate_content_type(func):
             raise UnsupportedMediaType("Content type must be application/json")
         return func(*args, **kwargs)
 
+    return wrapper
+
+
+def token_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        token = None
+        auth = request.headers.get("Authorization")
+        if auth:
+            token = auth.split(" ")[1]
+        if token is None:
+            abort(401, description="Missing token. Please login or register.")
+
+        try:
+            payload = jwt.decode(token, current_app.config.get("SECRET_KEY"), algorithms=["HS256"])
+        except jwt.ExpiredSignatureError:
+            abort(401, description="Expired token. Please login to get new token.")
+        except jwt.InvalidTokenError:
+            abort(401, description="Invalid token. Please login or register.")
+        else:
+            return func(payload["user_id"], *args, **kwargs)
     return wrapper
 
 
@@ -100,3 +127,10 @@ def get_pagination(query, func_name):
         pagination["previous_page"] = url_for(func_name, page=page - 1, **params)
 
     return paginate_obj.items, pagination
+
+
+def check_exists(model, args):
+    if model.query.filter(model.username == args["username"]).first():
+        abort(409, description=f"User with username {args['username']} already exists.")
+    if model.query.filter(model.email == args["email"]).first():
+        abort(409, description=f"User with email {args['email']} already exists.")

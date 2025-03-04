@@ -18,6 +18,7 @@ from app.utils import (
     apply_orders,
     apply_filter,
     get_pagination,
+    token_required,
 )
 from app.albums import albums_bp
 
@@ -50,9 +51,10 @@ def get_album_detail(album_id: int):
 
 
 @albums_bp.route("/albums/<int:album_id>", methods=["PUT"])
+@token_required
 @validate_content_type
 @use_args(album_schema, error_status_code=400)
-def update_album(args: dict, album_id: int):
+def update_album(user_id: int, args: dict, album_id: int):
     print("Received args:", args)
     print("Received raw request JSON:", request.get_json())
     print("Received args:", args)
@@ -73,7 +75,8 @@ def update_album(args: dict, album_id: int):
 
 
 @albums_bp.route("albums/<int:album_id>", methods=["DELETE"])
-def delete_artist(album_id: int):
+@token_required
+def delete_album(user_id: int, album_id: int):
     album = Album.query.get_or_404(
         album_id, description=f"Album with id {album_id} not found."
     )
@@ -100,9 +103,10 @@ def get_all_artist_albums(artist_id):
 
 
 @albums_bp.route("artist/<int:artist_id>/albums", methods=["POST"])
+@token_required
 @validate_content_type
 @use_args(AlbumSchema(exclude=["artist_id"]), error_status_code=400)
-def create_album(args: dict, artist_id: int):
+def create_album(user_id: int, args: dict, artist_id: int):
     Artist.query.get_or_404(
         artist_id, description=f"Artist with id {artist_id} not found."
     )
