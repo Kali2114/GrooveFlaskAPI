@@ -88,7 +88,7 @@ def get_update_user_password(user_id, args):
 @auth_bp.route("/update/data", methods=["PUT"])
 @token_required
 @validate_content_type
-@use_args(UserSchema(only=["username, email"]), error_status_code=400)
+@use_args(UserSchema(only=["username", "email"]), error_status_code=400)
 def get_update_user_data(user_id, args):
     check_exists(User, args)
     user = User.query.get_or_404(
