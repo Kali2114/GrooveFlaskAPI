@@ -20,31 +20,36 @@ class ErrorResponse:
         return response
 
 
-@errors_bp.errorhandler(404)
+@errors_bp.app_errorhandler(404)
 def not_found_error(error):
     """404 error."""
     return ErrorResponse(error.description, 404).to_response()
 
 
-@errors_bp.errorhandler(400)
+@errors_bp.app_errorhandler(400)
 def bad_request_error(error):
     """400 error."""
-    message = error.data.get("messages  ", {}).get("json", {})
+    message = error.data.get("messages", {}).get("json", {})
     return ErrorResponse(message, 400).to_response()
 
 
-@errors_bp.errorhandler(401)
+@errors_bp.app_errorhandler(401)
 def unauthorized_error(error):
     """401 error."""
     return ErrorResponse(error.description, 401).to_response()
 
 
-@errors_bp.errorhandler(415)
+@errors_bp.app_errorhandler(415)
 def unsupported_media_type_error(error):
-    return ErrorResponse(error.descrition, 415).to_response()
+    return ErrorResponse(error.description, 415).to_response()
 
 
-@errors_bp.errorhandler(500)
+@errors_bp.app_errorhandler(500)
 def internal_server_error(error):
     db.session.rollback()
-    return ErrorResponse(error.descrition, 500).to_response()
+    return ErrorResponse(error.description, 500).to_response()
+
+
+@errors_bp.app_errorhandler(409)
+def conflict_error(error):
+    return ErrorResponse(error.description, 409).to_response()
