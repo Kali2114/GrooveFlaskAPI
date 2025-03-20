@@ -60,3 +60,13 @@ def artist():
         "label": "2020",
         "birth_date": "10-08-1998"
     }
+
+
+@pytest.fixture
+def album():
+    return {
+        "title": "Test Album",
+        "number_of_songs": 10,
+        "description": "Test description",
+        "release_year": 2020,
+    }

@@ -151,13 +151,7 @@ def test_create_artist_missing_token(client, artist):
     assert "data" not in res_data
 
 
-def test_update_artist(client, artist, token):
-    create_res = client.post("api/artists",
-                             json=artist,
-                             headers={
-                                 "Authorization": f"Bearer {token}"
-                             })
-    assert create_res.status_code == 201
+def test_update_artist(client, artist, token, sample_data):
     updated_data = {
         "name": "Flojd",
         "birth_date": "21-03-1990",
@@ -176,13 +170,7 @@ def test_update_artist(client, artist, token):
         assert res_data["data"][field] == value
 
 
-def test_update_artist_missing_data(client, artist, token):
-    create_res = client.post("api/artists",
-                             json=artist,
-                             headers={
-                                 "Authorization": f"Bearer {token}"
-                             })
-    assert create_res.status_code == 201
+def test_update_artist_missing_data(client, artist, token, sample_data):
     updated_data = {
         "name": "Flojd",
         "birth_date": "21-03-1990",
@@ -199,19 +187,12 @@ def test_update_artist_missing_data(client, artist, token):
 
     get_res = client.get("api/artists/1")
     get_res_data = get_res.get_json()["data"]
-    assert get_res_data["name"] == "Oki"
-    assert get_res_data["label"] == "2020"
-    assert get_res_data["birth_date"] == "10-08-1998"
+    assert get_res_data["name"] == "VNM"
+    assert get_res_data["label"] == "DNB"
+    assert get_res_data["birth_date"] == "25-01-1984"
 
 
-def test_delete_artist(client, artist, token):
-    create_res = client.post("api/artists",
-                             json=artist,
-                             headers={
-                                 "Authorization": f"Bearer {token}"
-                             })
-    assert create_res.status_code == 201
-    assert create_res.headers["Content-Type"] == "application/json"
+def test_delete_artist(client, artist, token, sample_data):
     delete_res = client.delete("api/artists/1",
                                headers={
                                    "Authorization": f"Bearer {token}"

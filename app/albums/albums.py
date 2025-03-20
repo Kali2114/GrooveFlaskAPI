@@ -47,7 +47,7 @@ def get_album_detail(album_id: int):
     album = Album.query.get_or_404(
         album_id, description=f"Album with id {album_id} not found."
     )
-    return jsonify({"Success": True, "data": album_schema.dump(album)})
+    return jsonify({"success": True, "data": album_schema.dump(album)})
 
 
 @albums_bp.route("/albums/<int:album_id>", methods=["PUT"])
