@@ -26,7 +26,7 @@ from app.albums import albums_bp
 @albums_bp.route("/albums", methods=["GET"])
 def get_albums():
     query = Album.query
-    schema_args = get_schema_args(album_schema)
+    schema_args = get_schema_args(Album)
     query = apply_orders(Album, query)
     query = apply_filter(Album, query)
     items, pagination = get_pagination(query, "albums.get_albums")

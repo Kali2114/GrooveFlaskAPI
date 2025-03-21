@@ -22,6 +22,31 @@ def test_get_albums(client, sample_data):
     }
 
 
+def test_get_artists_with_params(client, sample_data):
+    res = client.get("api/albums?fields=title&sort=-id&page=2&limit=2")
+    res_data = res.get_json()
+    assert res.status_code == 200
+    assert res.headers["Content-Type"] == "application/json"
+    assert res_data["success"] == True
+    assert res_data["number_of_records"] == 2
+    assert len(res_data["data"]) == 2
+    assert res_data["pagination"] == {
+        "total_pages": 9,
+        "total_records": 18,
+        "current_page": "/api/albums?page=2&fields=title&sort=-id&limit=2",
+        "next_page": "/api/albums?page=3&fields=title&sort=-id&limit=2",
+        "previous_page": "/api/albums?page=1&fields=title&sort=-id&limit=2"
+    }
+    assert res_data["data"] == [
+        {
+            "title": "Postanawia Umrzec"
+        },
+        {
+            "title": "Refluks"
+        }
+    ]
+
+
 def test_get_single_album(client, sample_data):
     res = client.get("/api/albums/2")
     res_data = res.get_json()
