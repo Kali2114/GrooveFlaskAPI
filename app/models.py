@@ -157,4 +157,4 @@ class UserPasswordUpdateSchema(Schema):
 artist_schema = ArtistSchema()
 album_schema = AlbumSchema()
 user_schema = UserSchema()
-user_password_update=UserPasswordUpdateSchema()
+user_password_update = UserPasswordUpdateSchema()

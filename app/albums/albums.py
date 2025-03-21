@@ -84,10 +84,7 @@ def delete_album(user_id: int, album_id: int):
     db.session.commit()
 
     return jsonify(
-        {
-            "success": True,
-            "data": f"Album with id {album_id} has been deleted."
-         }
+        {"success": True, "data": f"Album with id {album_id} has been deleted."}
     )
 
 

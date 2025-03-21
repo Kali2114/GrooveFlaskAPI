@@ -54,15 +54,9 @@ def login(args: dict):
 @token_required
 def get_current_user(user_id):
     user = User.query.get_or_404(
-        user_id,
-        description=f"User with id {user_id} not found"
+        user_id, description=f"User with id {user_id} not found"
     )
-    return jsonify(
-        {
-            "success": True,
-            "data": user_schema.dump(user)
-        }
-    )
+    return jsonify({"success": True, "data": user_schema.dump(user)})
 
 
 @auth_bp.route("/update/password", methods=["PUT"])
@@ -71,8 +65,7 @@ def get_current_user(user_id):
 @use_args(user_password_update, error_status_code=400)
 def get_update_user_password(user_id, args):
     user = User.query.get_or_404(
-        user_id,
-        description=f"User with id {user_id} not found"
+        user_id, description=f"User with id {user_id} not found"
     )
     if not user.is_password_valid(args["current_password"]):
         abort(401, description="Invalid password.")
@@ -80,12 +73,7 @@ def get_update_user_password(user_id, args):
     user.password = user.generate_hashed_password(args["new_password"])
     db.session.commit()
 
-    return jsonify(
-        {
-            "success": True,
-            "data": user_schema.dump(user)
-        }
-    )
+    return jsonify({"success": True, "data": user_schema.dump(user)})
 
 
 @auth_bp.route("/update/data", methods=["PUT"])
@@ -95,17 +83,10 @@ def get_update_user_password(user_id, args):
 def get_update_user_data(user_id, args):
     check_exists(User, args)
     user = User.query.get_or_404(
-        user_id,
-        description=f"User with id {user_id} not found"
+        user_id, description=f"User with id {user_id} not found"
     )
     user.username = args["username"]
     user.email = args["email"]
     db.session.commit()
 
-    return jsonify(
-        {
-            "success": True,
-            "data": user_schema.dump(user)
-        }
-    )
-
+    return jsonify({"success": True, "data": user_schema.dump(user)})
