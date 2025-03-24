@@ -22,7 +22,7 @@ def test_get_albums(client, sample_data):
     }
 
 
-def test_get_artists_with_params(client, sample_data):
+def test_get_albums_with_params(client, sample_data):
     res = client.get("api/albums?fields=title&sort=-id&page=2&limit=2")
     res_data = res.get_json()
     assert res.status_code == 200
